@@ -1,0 +1,16 @@
+Speeding up NTP, GPS Lock in Android
+A pre-requisite of GPS location determination is an accurate clock. 
+
+Hence, all these smartphone devices sync up with NTP first before attempting to do GPS calculation. So when your GPS symbol blinks, and you are thinking your device is calculating your location, most of the time it is spending to reach the NTP servers, waiting to determine the time. So, it is very important that you choose the nearest NTP server, with the least RTT, to allow NTP to converge as fast as possible. Only then all the GPS signal calculation will start. It is likely that your ROM manufacturer has put a generic NTP server address (or one nearest to him) in your device. For me, it was set to europe.pool.ntp.org and here's the statistics (to get an accurate and practical result, you need to have a terminal emulator on your phone, also turn off wifi so it is forced to use GPRS/3G):
+--- europe.pool.ntp.org ping statistics ---
+5 packets transmitted, 4 received, 20% packet loss, time 13267ms
+rtt min/avg/max/mdev = 244.080/507.072/1075.470/334.695 ms
+When I changed it to something nearer:
+--- in.pool.ntp.org ping statistics ---
+5 packets transmitted, 3 received, 40% packet loss, time 13463ms
+rtt min/avg/max/mdev = 108.429/111.602/116.333/3.431 ms
+I wonder if the packet loss is a permanent phenomenon, but the round trip is much quicker. Instead of half second now it takes 1/10th of a second. 
+
+So what you need to do is to remount /system is "rw" mode (generally it is in "ro" for safety), and then edit /etc/gps.conf (copy out to your computer, edit and push back). Change the NTP_SERVER parameter to somewhere close to you. It may be country specific, like for India "in.pool.ntp.org"; if your country doesn't have any, use the continent pool like "asia.pool.ntp.org"; and as a last resort, use "pool.ntp.org" which is global.
+
+This is why sometimes the GPS of my phone finds my location faster from my dining table (reaches NTP via wifi and DSL) than outdoor (where though GPS signal is stronger but NTP to be reached over GPRS).

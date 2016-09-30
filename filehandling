@@ -1,0 +1,10 @@
+#include<stdio.h>
+int main(){
+    unsigned char c;
+    FILE *fp;
+    fp=fopen("test.text","r");
+    while((c=fgetc(fp))!=EOF)
+         printf("%c",c);
+    fclose(fp);
+    return 0;
+}
